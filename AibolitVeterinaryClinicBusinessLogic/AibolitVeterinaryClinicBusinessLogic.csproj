@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="BusinessLogics\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\AibolitVeterinaryClinicContracts\AibolitVeterinaryClinicContracts.csproj" />
   </ItemGroup>
 
