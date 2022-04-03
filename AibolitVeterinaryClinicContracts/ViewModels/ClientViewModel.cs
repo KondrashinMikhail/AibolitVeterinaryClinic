@@ -8,6 +8,8 @@ namespace AibolitVeterinaryClinicContracts.ViewModels
         [DisplayName ("Логин")] public string ClientLogin { get; set; }
         [DisplayName ("Имя клиента")] public string ClientName { get; set; }
         [DisplayName ("Телефонный номер клиента")] public string ClientPhoneNumber { get; set; }
-        public Dictionary<int, (string, int)> ClientAnimals;
+        //public Dictionary<int, (string, int)> ClientAnimals;
+        //public List<AnimalViewModel> ClientAnimals;
+        public List<int> ClientAnimals { get; set; }
     }
 }
