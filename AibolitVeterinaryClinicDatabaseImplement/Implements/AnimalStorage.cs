@@ -25,7 +25,7 @@ namespace AibolitVeterinaryClinicDatabaseImplement.Implements
             return context.Animals
                 .Include(rec => rec.AnimalVaccinationRecords)
                 .ThenInclude(rec => rec.Vaccination)
-                .Where(rec => rec.AnimalName.Contains(model.AnimalName))
+                .Where(rec => rec.AnimalName.Contains(model.AnimalName) || rec.ClientId == model.ClientId || rec.Id == model.Id)
                 .ToList()
                 .Select(CreateModel).ToList();
         }
@@ -73,20 +73,30 @@ namespace AibolitVeterinaryClinicDatabaseImplement.Implements
             animal.ClientId = model.ClientId;
             animal.AnimalName = model.AnimalName;
             animal.AnimalBreed = model.AnimalBreed;
-            if (model.Id.HasValue) 
+            if (model.Id.HasValue && model.AnimalVaccinationRecord != null)
             {
-                var animalVaccinationRecord = context.AnimalVaccinationRecords.Where(rec => rec.AnimalId == model.Id).ToList();
+                var animalVaccinationRecord = context.AnimalVaccinationRecords.Where(rec => rec.AnimalId == model.Id.Value).ToList();
                 context.AnimalVaccinationRecords.RemoveRange(animalVaccinationRecord.Where(rec => !model.AnimalVaccinationRecord.ContainsKey(rec.VaccinationId)).ToList());
                 context.SaveChanges();
-            }
-            foreach (var avr in model.AnimalVaccinationRecord) 
-            {
-                context.AnimalVaccinationRecords.Add(new AnimalVaccinationRecord 
+                foreach (var updateVaccination in animalVaccinationRecord)
                 {
-                    AnimalId = animal.Id,
-                    VaccinationId = avr.Key,
-                });
+                    if (model.AnimalVaccinationRecord.ContainsKey(updateVaccination.VaccinationId))
+                    {
+                        updateVaccination.Date = model.AnimalVaccinationRecord[updateVaccination.VaccinationId].Item2;
+                        model.AnimalVaccinationRecord.Remove(updateVaccination.VaccinationId);
+                    }
+                }
                 context.SaveChanges();
+                foreach (var pc in model.AnimalVaccinationRecord)
+                {
+                    context.AnimalVaccinationRecords.Add(new AnimalVaccinationRecord
+                    {
+                        AnimalId = animal.Id,
+                        VaccinationId = pc.Key,
+                        Date = pc.Value.Item2
+                    });
+                    context.SaveChanges();
+                }
             }
             return animal;
         }
@@ -97,10 +107,10 @@ namespace AibolitVeterinaryClinicDatabaseImplement.Implements
             {
                 Id = animal.Id,
                 ClientId = animal.ClientId,
-                ClientName = context.Clients.FirstOrDefault(rec => rec.Id == animal.ClientId)?.ClientName,
+                //ClientName = context.Clients.FirstOrDefault(rec => rec.Id == animal.ClientId)?.ClientName,
                 AnimalName = animal.AnimalName,
                 AnimalBreed = animal.AnimalBreed,
-                AnimalVaccinationRecord = animal.AnimalVaccinationRecords.ToDictionary(rec => rec.VaccinationId, rec => rec.Vaccination?.VaccinationName)
+                AnimalVaccinationRecord = animal.AnimalVaccinationRecords.ToDictionary(rec => rec.VaccinationId, rec => (rec.Vaccination?.VaccinationName, rec.Date))
             };
         }
     }

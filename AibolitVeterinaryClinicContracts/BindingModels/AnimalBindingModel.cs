@@ -6,6 +6,6 @@
         public int ClientId { get; set; }
         public string AnimalBreed { get; set; }
         public string AnimalName { get; set; }
-        public Dictionary<int, string> AnimalVaccinationRecord { get; set; }
+        public Dictionary<int, (string, DateTime)> AnimalVaccinationRecord { get; set; }
     }
 }

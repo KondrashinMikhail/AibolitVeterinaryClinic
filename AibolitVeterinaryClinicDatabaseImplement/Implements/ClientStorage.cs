@@ -16,7 +16,7 @@ namespace AibolitVeterinaryClinicDatabaseImplement.Implements
         {
             if (model == null) return null;
             using var context = new AibolitVeterinaryClinicDatabase();
-            return context.Clients.Where(rec => rec.ClientName.Contains(model.ClientName)).Select(CreateModel).ToList();
+            return context.Clients.Where(rec => rec.ClientName.Contains(model.ClientName) || rec.ClientLogin == model.ClientLogin).Select(CreateModel).ToList();
         }
         public ClientViewModel GetElement(ClientBindingModel model)
         {
@@ -51,28 +51,29 @@ namespace AibolitVeterinaryClinicDatabaseImplement.Implements
         {
             client.ClientLogin = model.ClientLogin;
             client.ClientName = model.ClientName;
+            client.ClientMail = model.ClientMail;
             client.ClientPhoneNumber = model.ClientPhoneNumber;
-            foreach (var animal in model.ClientAnimals) 
-            {
-                client.Animals.Add(new Animal
+            if (model.ClientAnimals != null) 
+                for (int i = 0; i < model.ClientAnimals.Count; i++)
                 {
-                    ClientId = client.Id,
-                    AnimalName = context.Animals.FirstOrDefault(rec => rec.Id == animal).AnimalName,
-                    AnimalBreed = context.Animals.FirstOrDefault(rec => rec.Id == animal).AnimalBreed
-                });
-                context.SaveChanges();
-            }
+                    client.Animals.Add(new Animal
+                    {
+                        ClientId = client.Id
+                    });
+                    context.SaveChanges();
+                }
             return client;
         }
         private static ClientViewModel CreateModel(Client client) 
         {
             using var context = new AibolitVeterinaryClinicDatabase();
             List<int> list = new List<int>();
-            foreach (var animal in client.Animals) if (animal.ClientId == client.Id) list.Add(animal.Id);
+            if (client.Animals != null) foreach (var animal in client.Animals) list.Add(animal.Id);
             return new ClientViewModel
             {
                 Id = client.Id,
                 ClientLogin = client.ClientLogin,
+                ClientMail = client.ClientMail,
                 ClientName = client.ClientName,
                 ClientPhoneNumber = client.ClientPhoneNumber,
                 ClientAnimals = list

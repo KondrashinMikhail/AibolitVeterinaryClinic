@@ -2,6 +2,7 @@
 using AibolitVeterinaryClinicContracts.StoragesContracts;
 using AibolitVeterinaryClinicContracts.ViewModels;
 using AibolitVeterinaryClinicDatabaseImplement.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AibolitVeterinaryClinicDatabaseImplement.Implements
 {
@@ -10,13 +11,15 @@ namespace AibolitVeterinaryClinicDatabaseImplement.Implements
         public List<MedicineViewModel> GetFullList()
         {
             using var context = new AibolitVeterinaryClinicDatabase();
-            return context.Medicines.Select(CreateModel).ToList();
+            return context.Medicines
+                .Include(rec => rec.Doctor)
+                .ToList().Select(CreateModel).ToList();
         }
         public List<MedicineViewModel> GetFilteredList(MedicineBindingModel model)
         {
             if (model == null) return null;
             using var context = new AibolitVeterinaryClinicDatabase();
-            return context.Medicines.Where(rec => rec.MedicineName.Contains(model.MedicineName)).Select(CreateModel).ToList();
+            return context.Medicines.Where(rec => rec.MedicineName.Contains(model.MedicineName) || rec.DoctorId == model.DoctorId).Select(CreateModel).ToList();
         }
         public MedicineViewModel GetElement(MedicineBindingModel model)
         {
@@ -49,6 +52,7 @@ namespace AibolitVeterinaryClinicDatabaseImplement.Implements
         }
         private Medicine CreateModel(MedicineBindingModel model, Medicine medicine) 
         {
+            medicine.DoctorId = model.DoctorId;
             medicine.MedicineName = model.MedicineName;
             return medicine;
         }
@@ -57,7 +61,8 @@ namespace AibolitVeterinaryClinicDatabaseImplement.Implements
             return new MedicineViewModel
             {
                 Id = medicine.Id,
-                MedicineName = medicine.MedicineName
+                DoctorId = medicine.DoctorId,
+                MedicineName = medicine.MedicineName,
             };
         }
     }

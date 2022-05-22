@@ -45,6 +45,8 @@ namespace AibolitVeterinaryClinicDatabaseImplement.Implements
             using var context = new AibolitVeterinaryClinicDatabase();
             var element = context.Vaccinations.FirstOrDefault(rec => rec.Id == model.Id);
             if (element == null) throw new Exception("Прививка не найдена");
+            context.Vaccinations.Remove(element);
+            context.SaveChanges();
         }
         private static Vaccination CreateModel(VaccinationBindingModel model, Vaccination vaccination) 
         {
@@ -56,7 +58,7 @@ namespace AibolitVeterinaryClinicDatabaseImplement.Implements
             return new VaccinationViewModel 
             {
                 Id = vaccination.Id,
-                VaccinationName=vaccination.VaccinationName
+                VaccinationName = vaccination.VaccinationName
             };
         }
     }

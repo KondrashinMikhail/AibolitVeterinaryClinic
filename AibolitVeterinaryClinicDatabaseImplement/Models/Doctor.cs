@@ -9,6 +9,7 @@ namespace AibolitVeterinaryClinicDatabaseImplement.Models
         [Required] public string DoctorName { get; set; }
         [Required] public string DoctorSpecification { get; set; }
         [ForeignKey("DoctorId")] public virtual List<Medicine> Medicines { get; set; }
-        [ForeignKey("DoctorId")] public virtual List<Service> Services { get; set; }
+        [ForeignKey("DoctorId")] public virtual List<Service>? Services { get; set; }
+        [ForeignKey("DoctorId")] public virtual List<Visit> Visits { get; set; }
     }
 }

@@ -1,16 +1,15 @@
 ﻿using AibolitVeterinaryClinicBusinessLogic.BusinessLogics;
+using AibolitVeterinaryClinicBusinessLogic.OfficePackage;
+using AibolitVeterinaryClinicBusinessLogic.OfficePackage.Implements;
+using AibolitVeterinaryClinicContracts.BindingModels;
 using AibolitVeterinaryClinicContracts.BusinessLogicsContracts;
 using AibolitVeterinaryClinicContracts.StoragesContracts;
 using AibolitVeterinaryClinicDatabaseImplement.Implements;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
+using System.Configuration;
 using Unity;
 using Unity.Lifetime;
+using System;
 
 namespace AibolitVeterinaryClinicView
 {
@@ -28,7 +27,19 @@ namespace AibolitVeterinaryClinicView
                 return container;
             }
         }
-        protected void App_StartUp(object sender, StartupEventArgs e) => Container.Resolve<MainWindow>().Show();
+        protected void App_StartUp(object sender, StartupEventArgs e) 
+        {
+            var mailSender = Container.Resolve<MailLogic>();
+            mailSender.MailConfig(new MailConfigBindingModel
+            {
+                SmtpClientHost = ConfigurationManager.AppSettings["SmtpClientHost"],
+                SmtpClientPort = Convert.ToInt32(ConfigurationManager.AppSettings["SmtpClientPort"]),
+                MailLogin = ConfigurationManager.AppSettings["MailLogin"],
+                MailPassword = ConfigurationManager.AppSettings["MailPassword"],
+                MailName = ConfigurationManager.AppSettings["MailName"]
+            });
+            Container.Resolve<MainWindow>().Show();
+        }
         private static IUnityContainer BuildUnityContainer()
         {
             var currentContainer = new UnityContainer();
@@ -48,6 +59,12 @@ namespace AibolitVeterinaryClinicView
             currentContainer.RegisterType<IVaccinationLogic, VaccinationLogic>(new HierarchicalLifetimeManager());
             currentContainer.RegisterType<IVisitLogic, VisitLogic>(new HierarchicalLifetimeManager());
 
+            currentContainer.RegisterType<IReportLogic, ReportLogic>(new HierarchicalLifetimeManager());
+            currentContainer.RegisterType<AbstractSaveToWord, SaveToWord>(new HierarchicalLifetimeManager());
+            currentContainer.RegisterType<AbstractSaveToExcel, SaveToExcel>(new HierarchicalLifetimeManager());
+            currentContainer.RegisterType<AbstractSaveToPdf, SaveToPdf>(new HierarchicalLifetimeManager());
+
+            currentContainer.RegisterType<MailLogic>(new SingletonLifetimeManager());
             return currentContainer;
         }
     }

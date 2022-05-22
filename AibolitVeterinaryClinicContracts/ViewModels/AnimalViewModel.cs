@@ -6,9 +6,9 @@ namespace AibolitVeterinaryClinicContracts.ViewModels
     {
         public int Id { get; set; }
         public int ClientId { get; set; }
-        [DisplayName ("Имя хозяина животного")]public string ClientName { get; set; }
-        [DisplayName ("Порода животного")] public string AnimalBreed { get; set; }
-        [DisplayName ("Кличка животного")]public string AnimalName { get; set; }
-        public Dictionary<int, string> AnimalVaccinationRecord { get; set; }
+        public string ClientName { get; set; }
+        public string AnimalBreed { get; set; }
+        public string AnimalName { get; set; }
+        public Dictionary<int, (string, DateTime)> AnimalVaccinationRecord { get; set; }
     }
 }

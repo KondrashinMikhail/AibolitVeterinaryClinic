@@ -18,6 +18,7 @@ namespace AibolitVeterinaryClinicBusinessLogic.BusinessLogics
         {
             var element = _serviceStorage.GetElement(new ServiceBindingModel { Id = model.Id });
             if (element == null) throw new Exception("Услуга не найдена");
+            _serviceStorage.Delete(model);
         }
         public List<ServiceViewModel> Read(ServiceBindingModel model)
         {

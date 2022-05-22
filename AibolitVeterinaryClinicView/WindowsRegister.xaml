@@ -1,0 +1,41 @@
+﻿<Window x:Class="AibolitVeterinaryClinicView.WindowRegister"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AibolitVeterinaryClinicView"
+        mc:Ignorable="d"
+        Title="Регистрация" Height="500" Width="400">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Grid.Column="0" Margin="20">
+            <Label Content="Введите логин:" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <Label Content="( не более 50 символов )" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="0" Margin="20">
+            <Label Content="Введите ФИО:"  VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <Label Content="( не более 50 символов )" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Grid.Column="0" Margin="20">
+            <Label Content="Введите номер телефона:"  VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <Label Content="( 11 цифр, без '+' )" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        </StackPanel>
+            <Label Content="Введите адрес почты:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <TextBox x:Name="TextBoxLogin" Grid.Row="0" Grid.Column="1" Margin="5" Height="20" MaxLength="50"/>
+        <TextBox x:Name="TextBoxName" Grid.Row="1" Grid.Column="1" Margin="5" Height="20" MaxLength="50"/>
+        <TextBox x:Name="TextBoxPhoneNumder" Grid.Row="2" Grid.Column="1" Margin="5" Height="20" MaxLength="11"/>
+        <TextBox x:Name="TextBoxMail" Grid.Row="3" Grid.Column="1" Margin="5" Height="20" MaxLength="50"/>
+        <Button x:Name="ButtonRegister" Content="Зарегистрироваться" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1"  Width="150" Height="40" Background="Aquamarine" Click="ButtonRegister_Click"/>
+        <Button x:Name="ButtonCancel" Content="Отмена" HorizontalAlignment="Center" Grid.Row="4" VerticalAlignment="Center" Width="150" Height="40" Background="Aquamarine" Click="ButtonCancel_Click"/>
+    </Grid>
+</Window>
