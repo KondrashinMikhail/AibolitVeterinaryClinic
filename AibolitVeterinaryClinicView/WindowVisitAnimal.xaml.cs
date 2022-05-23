@@ -46,8 +46,7 @@ namespace AibolitVeterinaryClinicView
                         Id = visitId,
                         DateVisit = element.DateVisit,
                         ClientId = clientId,
-                        ServiceId = element.ServiceId,
-                        DoctorId = element.DoctorId,
+                        Services = element.Services,
                         Medicines = element.Medicines,
                         Animals = animalsId
                     });
@@ -74,13 +73,11 @@ namespace AibolitVeterinaryClinicView
                 DataGridVisits.Columns[0].Visibility = Visibility.Hidden;
                 DataGridVisits.Columns[1].Visibility = Visibility.Hidden;
                 DataGridVisits.Columns[2].Visibility = Visibility.Hidden;
-                DataGridVisits.Columns[3].Header = "Название услуги";
-                DataGridVisits.Columns[4].Header = "Имя врача";
+                DataGridVisits.Columns[3].Visibility = Visibility.Hidden;
+                DataGridVisits.Columns[4].Visibility = Visibility.Hidden;
                 DataGridVisits.Columns[5].Visibility = Visibility.Hidden;
-                DataGridVisits.Columns[6].Visibility = Visibility.Hidden;
-                DataGridVisits.Columns[7].Visibility = Visibility.Hidden;
-                DataGridVisits.Columns[8].Header = "Дата визита";
-                (DataGridVisits.Columns[8] as DataGridTextColumn).Binding.StringFormat = "dd.MM.yyyy";
+                DataGridVisits.Columns[6].Header = "Дата визита";
+                (DataGridVisits.Columns[6] as DataGridTextColumn).Binding.StringFormat = "dd.MM.yyyy";
             }
         }
     }

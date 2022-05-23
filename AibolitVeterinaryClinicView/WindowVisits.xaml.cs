@@ -31,13 +31,11 @@ namespace AibolitVeterinaryClinicView
                     DataGrid.Columns[0].Visibility = Visibility.Hidden;
                     DataGrid.Columns[1].Visibility = Visibility.Hidden;
                     DataGrid.Columns[2].Visibility = Visibility.Hidden;
-                    DataGrid.Columns[3].Header = "Имя врача";
-                    DataGrid.Columns[4].Header = "Название услуги";
+                    DataGrid.Columns[3].Visibility = Visibility.Hidden;
+                    DataGrid.Columns[4].Visibility = Visibility.Hidden;
                     DataGrid.Columns[5].Visibility = Visibility.Hidden;
-                    DataGrid.Columns[6].Visibility = Visibility.Hidden;
-                    DataGrid.Columns[7].Visibility = Visibility.Hidden;
-                    DataGrid.Columns[8].Header = "Дата визита";
-                    (DataGrid.Columns[8] as DataGridTextColumn).Binding.StringFormat = "dd.MM.yyyy";
+                    DataGrid.Columns[6].Header = "Дата визита";
+                    (DataGrid.Columns[6] as DataGridTextColumn).Binding.StringFormat = "dd.MM.yyyy";
                 }
             }
             catch (Exception ex)
@@ -53,16 +51,17 @@ namespace AibolitVeterinaryClinicView
         }
         private void Update_Click(object sender, RoutedEventArgs e)
         {
-            var form = App.Container.Resolve<WindowVisit>();
-            form.clientId = clientId;
-            form.visitId = ((VisitViewModel)DataGrid.SelectedItems[0]).Id;
-            form.Service.IsEnabled = false;
-            if (form.ShowDialog() == true) LoadData();
+            if (DataGrid.SelectedItems.Count == 1)
+            {
+                var form = App.Container.Resolve<WindowVisit>();
+                form.clientId = clientId;
+                form.visitId = ((VisitViewModel)DataGrid.SelectedItems[0]).Id;
+                if (form.ShowDialog() == true) LoadData();
+            }
         }
         private void Delete_Click(object sender, RoutedEventArgs e)
         {
             if (DataGrid.SelectedItems.Count == 1)
-            {
                 if (MessageBox.Show("Удалить визит?", "Вопрос", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
                     try
@@ -75,7 +74,6 @@ namespace AibolitVeterinaryClinicView
                     }
                     LoadData();
                 }
-            }
         }
         private void Refresh_Click(object sender, RoutedEventArgs e) => LoadData();
         private void Window_Loaded(object sender, RoutedEventArgs e) => LoadData();

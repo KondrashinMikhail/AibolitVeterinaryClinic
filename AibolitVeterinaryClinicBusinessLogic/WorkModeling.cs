@@ -154,7 +154,8 @@ namespace AibolitVeterinaryClinicBusinessLogic
             foreach (var service in _serviceLogic.Read(null)) 
             {
                 foreach (var visit in _visitLogic.Read(null))
-                    if (service.Id == visit.ServiceId) flag = true;
+                    foreach (var id in visit.Services)
+                        if (service.Id == id) flag = true;
                 if (!flag)
                     _serviceLogic.Delete(new ServiceBindingModel { Id = service.Id });
                 flag = false;
@@ -163,24 +164,23 @@ namespace AibolitVeterinaryClinicBusinessLogic
 
             foreach (var doctor in _doctorLogic.Read(null))
             {
-                foreach (var visit in _visitLogic.Read(null))
-                    if (doctor.Id == visit.DoctorId) flag = true;
+                foreach (var service in _serviceLogic.Read(null))
+                    if (doctor.Id == service.DoctorId) flag = true;
                 if (!flag)
                     _doctorLogic.Delete(new DoctorBindingModel { Id = doctor.Id });
                 flag = false;
             }
-            flag = false;
         }
         public void MedicinesServiceBinding() 
         {
             List<ServiceViewModel> services = _serviceLogic.Read(null);
             List<MedicineViewModel> medicines = new();
-            foreach (var service in services) 
+            foreach (var service in services)
             {
                 medicines = _medicineLogic.Read(null);
                 var index = new Random().Next(medicines.Count);
                 var medicine = medicines.ElementAt(index);
-                List<MedicineBindingModel> list = new() { new MedicineBindingModel 
+                List<MedicineBindingModel> list = new() { new MedicineBindingModel
                 {
                     Id = medicine.Id,
                     MedicineName = medicine.MedicineName

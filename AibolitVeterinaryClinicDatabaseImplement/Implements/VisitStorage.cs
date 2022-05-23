@@ -32,8 +32,10 @@ namespace AibolitVeterinaryClinicDatabaseImplement.Implements
                 .ThenInclude(rec => rec.Medicine)
                 .Include(rec => rec.VisitAnimals)
                 .ThenInclude(rec => rec.Animal)
-                 .Where(rec => (rec.ClientId == model.ClientId)
-                || (model.DateFrom.HasValue && model.DateTo.HasValue && model.DateFrom <= rec.DateVisit && model.DateTo >= rec.DateVisit))
+                .Include(rec => rec.Client)
+                 .Where(rec => rec.ClientId.Equals(model.ClientId)
+                   || (!model.DateFrom.HasValue && !model.DateTo.HasValue && rec.DateVisit.Date == model.DateVisit.Date)
+                   || (model.DateFrom.HasValue && model.DateTo.HasValue && rec.DateVisit.Date >= model.DateFrom.Value.Date && rec.DateVisit.Date <= model.DateTo.Value.Date))
                 .ToList()
                 .Select(CreateModel)
                 .ToList();
@@ -52,7 +54,6 @@ namespace AibolitVeterinaryClinicDatabaseImplement.Implements
             {
                 DateVisit = model.DateVisit,
                 ClientId = model.ClientId,
-                DoctorId = model.DoctorId
             };
             context.Visits.Add(visit);
             context.SaveChanges();
@@ -80,53 +81,64 @@ namespace AibolitVeterinaryClinicDatabaseImplement.Implements
         {
             visit.DateVisit = model.DateVisit;
             visit.ClientId = model.ClientId;
-            visit.DoctorId = model.DoctorId;
-            visit.ServiceId = model.ServiceId;
-            if (model.Id.HasValue)
-            {
-                if (model.Medicines != null)
+            bool flag = true;
+
+            if (model.Medicines!= null)
+                foreach (var item in model.Medicines)
                 {
-                    var visitMedicine = context.VisitMedicines.Where(rec => rec.VisitId == model.Id.Value).ToList();
-                    context.VisitMedicines.RemoveRange(visitMedicine.Where(rec => !model.Medicines.Contains(rec.MedicineId)).ToList());
+                    foreach (var medicinesVisits in context.VisitMedicines.Where(rec => rec.VisitId == visit.Id.Value).ToList()) if (medicinesVisits.MedicineId == item) flag = false;                    
+                    if (flag) 
+                        context.VisitMedicines.Add(new VisitMedicine
+                        {
+                            VisitId = (int)visit.Id,
+                            MedicineId = item
+                        });
                     context.SaveChanges();
-                    foreach (var update in visitMedicine)
-                        if (model.Medicines.Contains(update.MedicineId))
-                            model.Medicines.Remove(update.MedicineId);
-                    context.SaveChanges();
+                    flag = true;
                 }
-                var visitAnimal = context.VisitAnimals.Where(rec => rec.VisitId == model.Id.Value).ToList();
-                context.VisitAnimals.RemoveRange(visitAnimal.Where(rec => !model.Animals.Contains((int)rec.AnimalId)).ToList());
-                context.SaveChanges();
-                foreach (var update in visitAnimal)
-                    if (model.Animals.Contains((int)update.AnimalId))
-                        model.Animals.Remove((int)update.AnimalId);
-                context.SaveChanges();
-                   
-            }
-            foreach (var item in model.Medicines)
-            {
-                context.VisitMedicines.Add(new VisitMedicine
-                {
-                    VisitId = (int)visit.Id,
-                    MedicineId = (int)context.Medicines.FirstOrDefault(rec => rec.DoctorId == model.DoctorId).Id
-                });
-                context.SaveChanges();
-            }
             if (model.Animals != null)
-                foreach (var item in model.Animals)
                 {
-                    context.VisitAnimals.Add(new VisitAnimal
+                    foreach (var item in model.Animals)
                     {
-                        VisitId = visit.Id,
-                        AnimalId = item
-                    });
-                    context.SaveChanges();
+                        foreach (var animalVisit in context.VisitAnimals.Where(rec => rec.VisitId == visit.Id.Value).ToList()) if (animalVisit.AnimalId == item) flag = false;
+                        if (flag)
+                            context.VisitAnimals.Add(new VisitAnimal
+                            {
+                                VisitId = visit.Id,
+                                AnimalId = item
+                            });
+                        context.SaveChanges();
+                        flag = true;
+                    }
                 }
-            context.ServiceVisits.Add(new VisitService
-            {
-                VisitId = visit.Id,
-                ServiceId = model.ServiceId
-            });
+                if (model.Services != null)
+                {
+                    foreach (var item in model.Services)
+                    {
+                        if (context.ServiceVisits.Count() != 0)
+                        {
+                            foreach (var service in context.ServiceVisits.Where(rec => rec.VisitId == visit.Id.Value).ToList()) if (service.ServiceId == item) flag = false;
+                            if (flag)
+                                context.ServiceVisits.Add(new VisitService
+                                {
+                                    VisitId = visit.Id,
+                                    ServiceId = item
+                                });
+                            context.SaveChanges();
+                            flag = true;
+                        }
+                        else
+                        {
+                            context.ServiceVisits.Add(new VisitService
+                            {
+                                VisitId = visit.Id,
+                                ServiceId = item
+                            });
+                            context.SaveChanges();
+                        }
+                       
+                    }
+                }
             context.SaveChanges();
             return visit;
         }
@@ -134,24 +146,25 @@ namespace AibolitVeterinaryClinicDatabaseImplement.Implements
         {
             using var context = new AibolitVeterinaryClinicDatabase();
             List<int> listMedicines = new();
-            if (visit.VisitMedicines != null)
-                foreach (var item in context.VisitMedicines.Where(rec => rec.VisitId == visit.Id).ToList()) 
-                    listMedicines.Add(item.MedicineId);
+            if (visit.VisitMedicines != null) foreach (var item in context.VisitMedicines.Where(rec => rec.VisitId == visit.Id).ToList()) listMedicines.Add(item.MedicineId);
             List<int> listAnimals = new();
-            if (visit.VisitAnimals != null)
-                foreach (var item in visit.VisitAnimals.Where(rec => rec.VisitId == visit.Id).ToList())
-                    listAnimals.Add((int)item.AnimalId);
+            if (visit.VisitAnimals != null) foreach (var item in visit.VisitAnimals.Where(rec => rec.VisitId == visit.Id).ToList()) listAnimals.Add((int)item.AnimalId);
+            List<int> listServices = new();
+            List<string> listServiceNames = new();
+            if (visit.VisitServices != null) foreach (var item in visit.VisitServices.Where(rec => rec.VisitId == visit.Id).ToList()) 
+                {
+                    listServices.Add((int)item.ServiceId);
+                    listServiceNames.Add(context.Services.FirstOrDefault(rec => rec.Id == item.ServiceId).ServiceName);
+                }
             return new VisitViewModel 
             {
                 Id = (int)visit.Id,
                 DateVisit = visit.DateVisit,
                 ClientId = visit.ClientId,
-                DoctorId = visit.DoctorId,
-                ServiceId = visit.ServiceId,
+                Services = listServices,
                 Animals = listAnimals,
                 Medicines = listMedicines,
-                ServiceName = context.Services.FirstOrDefault(rec => rec.Id == visit.ServiceId).ServiceName,
-                DoctorName = context.Doctors.FirstOrDefault(rec => rec.Id == visit.DoctorId).DoctorName
+                ServiceNames = listServiceNames,
             };
         }
     }

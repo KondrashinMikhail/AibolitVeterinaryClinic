@@ -75,10 +75,10 @@ namespace AibolitVeterinaryClinicDatabaseImplement.Implements
             animal.AnimalBreed = model.AnimalBreed;
             if (model.Id.HasValue && model.AnimalVaccinationRecord != null)
             {
-                var animalVaccinationRecord = context.AnimalVaccinationRecords.Where(rec => rec.AnimalId == model.Id.Value).ToList();
-                context.AnimalVaccinationRecords.RemoveRange(animalVaccinationRecord.Where(rec => !model.AnimalVaccinationRecord.ContainsKey(rec.VaccinationId)).ToList());
+                var animalVaccinationRecords = context.AnimalVaccinationRecords.Where(rec => rec.AnimalId == model.Id.Value).ToList();
+                context.AnimalVaccinationRecords.RemoveRange(animalVaccinationRecords.Where(rec => !model.AnimalVaccinationRecord.ContainsKey(rec.VaccinationId)).ToList());
                 context.SaveChanges();
-                foreach (var updateVaccination in animalVaccinationRecord)
+                foreach (var updateVaccination in animalVaccinationRecords)
                 {
                     if (model.AnimalVaccinationRecord.ContainsKey(updateVaccination.VaccinationId))
                     {

@@ -4,8 +4,7 @@
     {
         public int? Id { get; set; }
         public int ClientId { get; set; }
-        public int ServiceId { get; set; }
-        public int DoctorId { get; set; }
+        public List<int> Services { get; set; }
         public List<int>? Animals { get; set; }
         public List<int> Medicines { get; set; }
         public DateTime DateVisit { get; set; }

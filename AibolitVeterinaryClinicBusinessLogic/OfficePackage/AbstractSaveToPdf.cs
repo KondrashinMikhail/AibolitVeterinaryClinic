@@ -34,13 +34,16 @@ namespace AibolitVeterinaryClinicBusinessLogic.OfficePackage
             {
                 string medicines = "";
                 string animalVaccinations = "";
+                string services = "";
                 foreach (var medicine in visit.Medicines)
                     medicines += (medicine + "; ");
                 foreach (var animalVaccination in visit.AnimalVaccinations)
                     animalVaccinations += (animalVaccination + "; ");
+                foreach (var service in visit.ServiceNames)
+                    services += (service + "; ");
                 CreateRow(new PdfRowParameters
                 {
-                    Texts = new List<string> { visit.ServiceName, visit.DateVisit.ToShortDateString(), medicines, animalVaccinations },
+                    Texts = new List<string> { services, visit.DateVisit.ToShortDateString(), medicines, animalVaccinations },
                     Style = "Normal",
                     ParagraphAlignment = PdfParagraphAlignmentType.Left
                 });

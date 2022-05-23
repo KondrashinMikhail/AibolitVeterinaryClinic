@@ -5,24 +5,25 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AibolitVeterinaryClinicView"
         mc:Ignorable="d"
-        Title="Визит" Loaded="Window_Loaded"  Height="400" Width="400">
+        Title="Визит" Loaded="Window_Loaded" Height="400" Width="700">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
+            <RowDefinition/>
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Label Content="Врач: " VerticalAlignment="Center" HorizontalAlignment="Center"/>
-        <TextBox x:Name="DoctorName" Grid.Column="1" VerticalAlignment="Center" IsEnabled="false" Height="20" Margin="5"/>
-        <Label Content="Выберите услугу: " Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-        <ComboBox x:Name="Service" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Height="20" Margin="5" DropDownClosed="Service_DropDownClosed"/>
-        <Label Content="Введите дату: " Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <Label Content="Введите дату:" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         <TextBox x:Name="DateVisit" Grid.Row="2" Grid.Column="1" MaxLength="100" VerticalAlignment="Center" Height="20" Margin="5"/>
-        <Button x:Name="Save" Grid.Row="3" Grid.ColumnSpan="2" Content="Сохранить" Background="Aquamarine" VerticalAlignment="Center" HorizontalAlignment="Center" Width="150" Height="40" Click="Save_Click"/>
+        <Button x:Name="Add" Grid.Row ="0" Grid.Column="1" Grid.RowSpan="2" Margin="20" Width="150" Height="40" Background="Aquamarine" Content="Добавить услугу" Click="Add_Click"/>
+        <Button x:Name="Save" Grid.Row ="2" Grid.Column="2" Margin="20" Width="150" Height="40" Background="Aquamarine" Content="Сохранить" Click="Save_Click" />
+        <Label Content="Доступные услуги:" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <DataGrid x:Name="DataGridAvailable" HeadersVisibility ="Column" Grid.RowSpan="2" Grid.Column="0" Grid.Row="0" Margin="14, 30, 14, 30" ColumnWidth="*" d:ItemsSource="{d:SampleData ItemCount=20}"/>
+        <Label Content="Выбранные услуги:" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="0" Grid.Column="2"/>
+        <ListBox x:Name = "ListSelected" Margin="14, 30, 14, 14" Grid.ColumnSpan="1" Grid.Row="0" Grid.Column="2" Grid.RowSpan="2"/>
     </Grid>
 </Window>

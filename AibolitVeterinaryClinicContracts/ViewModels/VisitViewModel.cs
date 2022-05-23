@@ -6,10 +6,8 @@ namespace AibolitVeterinaryClinicContracts.ViewModels
     {
         public int Id { get; set; }
         public int ClientId { get; set; }
-        public int DoctorId { get; set; }
-        public string DoctorName { get; set; }
-        public string ServiceName { get; set; }
-        public int ServiceId { get; set; }
+        public List<string> ServiceNames { get; set; }
+        public List<int> Services { get; set; }
         public List<int>? Animals { get; set; }
         public List<int>? Medicines { get; set; }
         public DateTime DateVisit { get; set; }

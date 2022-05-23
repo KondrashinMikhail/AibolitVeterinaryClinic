@@ -56,24 +56,27 @@ namespace AibolitVeterinaryClinicView
                     ClientId = clientId
                 }, clientId);
                 var itemSourceList = new List<ReportVisitsDataGridViewModel>();
-                string medicines = "";
-                string animalVaccinations = "";
                 foreach (var visit in visits)
                 {
+                    string medicines = "";
+                    string animalVaccinations = "";
+                    string services = "";
                     foreach (var medicine in visit.Medicines)
                         medicines += (medicine + "; ");
                     foreach (var animalVaccination in visit.AnimalVaccinations)
                         animalVaccinations += (animalVaccination + "; ");
+                    foreach (var service in visit.ServiceNames)
+                        services += (service + "; ");
                     itemSourceList.Add(new ReportVisitsDataGridViewModel
                     {
-                        ServiceName = visit.ServiceName,
+                        ServiceNames = services,
                         DateVisit = visit.DateVisit.ToShortDateString(),
                         Medicines = medicines,
                         AnimalVaccinations = animalVaccinations
                     });
                 }
                 DataGridVisits.ItemsSource = itemSourceList;
-                DataGridVisits.Columns[0].Header = "Услуга";
+                DataGridVisits.Columns[0].Header = "Услуги";
                 DataGridVisits.Columns[1].Header = "Дата";
                 DataGridVisits.Columns[2].Header = "Медикаменты";
                 DataGridVisits.Columns[3].Header = "Прививки";
@@ -92,7 +95,6 @@ namespace AibolitVeterinaryClinicView
                 MessageBox.Show("Выберите даты", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-
             if (DatePikerFrom.SelectedDate >= DatePikerTo.SelectedDate)
             {
                 MessageBox.Show("Дата начала должна быть меньше даты окончания", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);

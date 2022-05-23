@@ -12,7 +12,6 @@ namespace AibolitVeterinaryClinicView
     public partial class WindowVaccination : Window
     {
         public int animalId { get; set; }
-
         public int Id
         {
             get { return Convert.ToInt32(VaccinationName.SelectedValue); }

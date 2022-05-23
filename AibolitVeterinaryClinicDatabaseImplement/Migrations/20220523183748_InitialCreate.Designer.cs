@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AibolitVeterinaryClinicDatabaseImplement.Migrations
 {
     [DbContext(typeof(AibolitVeterinaryClinicDatabase))]
-    [Migration("20220522205853_InitialCreate")]
+    [Migration("20220523183748_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -218,26 +218,15 @@ namespace AibolitVeterinaryClinicDatabaseImplement.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"), 1L, 1);
 
-                    b.Property<int?>("AnimalId")
-                        .HasColumnType("int");
-
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DateVisit")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ServiceId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
-
-                    b.HasIndex("DoctorId");
 
                     b.ToTable("Visits");
                 });
@@ -386,15 +375,7 @@ namespace AibolitVeterinaryClinicDatabaseImplement.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AibolitVeterinaryClinicDatabaseImplement.Models.Doctor", "Doctor")
-                        .WithMany("Visits")
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Client");
-
-                    b.Navigation("Doctor");
                 });
 
             modelBuilder.Entity("AibolitVeterinaryClinicDatabaseImplement.Models.VisitAnimal", b =>
@@ -465,8 +446,6 @@ namespace AibolitVeterinaryClinicDatabaseImplement.Migrations
                     b.Navigation("Medicines");
 
                     b.Navigation("Services");
-
-                    b.Navigation("Visits");
                 });
 
             modelBuilder.Entity("AibolitVeterinaryClinicDatabaseImplement.Models.Medicine", b =>

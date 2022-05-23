@@ -51,7 +51,7 @@ namespace AibolitVeterinaryClinicView
                 _logic.CreateOrUpdate(new ClientBindingModel
                 {
                     ClientLogin = TextBoxLogin.Text,
-                    ClientMail = TextBoxMail.Text,
+                    ClientMail = TextBoxMail.Text.ToString(),
                     ClientName = TextBoxName.Text,
                     ClientPhoneNumber = TextBoxPhoneNumder.Text
                 });

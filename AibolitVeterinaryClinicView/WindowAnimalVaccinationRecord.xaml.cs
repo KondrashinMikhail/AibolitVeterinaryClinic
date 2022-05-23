@@ -51,7 +51,7 @@ namespace AibolitVeterinaryClinicView
             if (form.ShowDialog() == true)
             {
                 if (animalVaccinationRecord.ContainsKey(form.Id)) animalVaccinationRecord[form.Id] = (form.Name, form.Date);
-                else animalVaccinationRecord.Add(form.Id, (form.Name, form.Date));
+                animalVaccinationRecord.Add(form.Id, (form.Name, form.Date));
                 LoadData();
             }
         }

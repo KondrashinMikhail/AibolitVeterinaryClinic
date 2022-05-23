@@ -72,7 +72,6 @@ namespace AibolitVeterinaryClinicBusinessLogic.BusinessLogics
         }
         public void SaveVisitsToPdfFile(ReportBindingModel model, int clientId)
         {
-            
             _saveToPdf.CreateDoc(new PdfInfo
             {
                 FileName = model.FileName,
@@ -85,12 +84,12 @@ namespace AibolitVeterinaryClinicBusinessLogic.BusinessLogics
         public List<ReportVisitsViewModel> GetVisitsReportInfo(ReportBindingModel model, int clientId)
         {
             var list = new List<ReportVisitsViewModel>();
-            var visits = _visitStorage.GetFilteredList(new VisitBindingModel
+            var visitsSortDate = _visitStorage.GetFilteredList(new VisitBindingModel
             {
-                ClientId = clientId,
                 DateFrom = model.DateFrom,
                 DateTo = model.DateTo
             });
+            var visits = visitsSortDate.Where(rec => rec.ClientId == clientId);
            
             foreach (var visit in visits) 
             {
@@ -103,7 +102,7 @@ namespace AibolitVeterinaryClinicBusinessLogic.BusinessLogics
                         animalVaccinations.Add(vaccination.Value.Item1);
                 list.Add(new ReportVisitsViewModel
                 {
-                    ServiceName = visit.ServiceName,
+                    ServiceNames = visit.ServiceNames,
                     DateVisit = visit.DateVisit,
                     Medicines = medicines,
                     AnimalVaccinations = animalVaccinations

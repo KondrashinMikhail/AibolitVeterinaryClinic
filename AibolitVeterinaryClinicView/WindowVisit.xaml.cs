@@ -1,9 +1,20 @@
 ﻿using AibolitVeterinaryClinicContracts.BindingModels;
 using AibolitVeterinaryClinicContracts.BusinessLogicsContracts;
-using AibolitVeterinaryClinicDatabaseImplement;
+using AibolitVeterinaryClinicContracts.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using Unity;
 
 namespace AibolitVeterinaryClinicView
 {
@@ -12,66 +23,69 @@ namespace AibolitVeterinaryClinicView
     /// </summary>
     public partial class WindowVisit : Window
     {
-        public int clientId { get; set; }
         public int visitId { get; set; }
-        private readonly IServiceLogic _serviceLogic;
-        private readonly IDoctorLogic _doctorLogic;
+        public int clientId { get; set; }
         private readonly IVisitLogic _visitLogic;
-        public int ServiceId
-        {
-            get { return Convert.ToInt32(Service.SelectedValue); }
-            set { Service.SelectedValue = value; }
-        }
-        public string ServiceName { get { return Service.Text; } }
-        public DateTime Date
-        {
-            get { return Convert.ToDateTime(DateVisit.Text); }
-            set { DateVisit.Text = value.ToShortDateString(); }
-        }
-        public WindowVisit(IServiceLogic serviceLogic, IDoctorLogic doctorLogic, IVisitLogic visitLogic)
+        private readonly IServiceLogic _serviceLogic;
+        private List<string> listNames = new();
+        private List<int> listIds = new ();
+        public WindowVisit(IVisitLogic visitLogic, IServiceLogic serviceLogic)
         {
             InitializeComponent();
-            var list = serviceLogic.Read(null);
-            if (list != null)
-            {
-                Service.DisplayMemberPath = "ServiceName";
-                Service.SelectedValuePath = "Id";
-                Service.ItemsSource = list;
-                Service.SelectedItem = null;
-            }
-            _serviceLogic = serviceLogic;
-            _doctorLogic = doctorLogic;
             _visitLogic = visitLogic;
+            _serviceLogic = serviceLogic;
+        }
+        private void LoadData() 
+        {
+            var list = _serviceLogic.Read(null);
+            DataGridAvailable.ItemsSource = list;
+            DataGridAvailable.Columns[0].Visibility = Visibility.Hidden;
+            DataGridAvailable.Columns[1].Visibility = Visibility.Hidden;
+            DataGridAvailable.Columns[2].Header = "Услуга";
+            DataGridAvailable.Columns[3].Visibility = Visibility.Hidden;
+
+            ListSelected.ItemsSource = listNames;
+            ListSelected.Items.Refresh();
+        }
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            LoadData();
+            if (visitId != 0) DateVisit.Text = _visitLogic.Read(new VisitBindingModel { Id = visitId })?[0].DateVisit.ToShortDateString();
+        }
+        private void Add_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataGridAvailable.SelectedItems.Count == 1)
+            {
+                listIds.Add(((ServiceViewModel)DataGridAvailable.SelectedItems[0]).Id);
+                listNames.Add(((ServiceViewModel)DataGridAvailable.SelectedItems[0]).ServiceName);
+            }
+            LoadData();
         }
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            using var context = new AibolitVeterinaryClinicDatabase();
-            var dict = _serviceLogic.Read(new ServiceBindingModel { ServiceName = ServiceName })?[0].ServiceMedicine;
+            if (listIds.Count == 0 || listNames.Count == 0) 
+            {
+                MessageBox.Show("Не выбрано ни одной услуги.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (string.IsNullOrEmpty(DateVisit.Text))
+            {
+                MessageBox.Show("Введите дату.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             var medicines = new List<int>();
-            foreach (var medicicne in _serviceLogic.Read(new ServiceBindingModel { ServiceName = ServiceName })?[0].ServiceMedicine)
-                medicines.Add(medicicne.Key);
+            foreach (var serviceName in listNames)
+                foreach (var medicicne in _serviceLogic.Read(new ServiceBindingModel { ServiceName = serviceName })?[0].ServiceMedicine)
+                    medicines.Add(medicicne.Key);
             _visitLogic.CreateOrUpdate(new VisitBindingModel
             {
                 ClientId = clientId,
-                DoctorId = (int)_serviceLogic.Read(new ServiceBindingModel { ServiceName = ServiceName })?[0].DoctorId,
-                ServiceId = (int)_serviceLogic.Read(new ServiceBindingModel { ServiceName = ServiceName })?[0].Id,
-                DateVisit = Date,
+                Services = listIds,
+                DateVisit = Convert.ToDateTime(DateVisit.Text),
                 Medicines = medicines
             });
             DialogResult = true;
             Close();
-        }
-        private void Service_DropDownClosed(object sender, EventArgs e) => DoctorName.Text = _doctorLogic.Read(new DoctorBindingModel { Id = _serviceLogic.Read(new ServiceBindingModel { Id = ServiceId })?[0].DoctorId })?[0].DoctorName;
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            var element = _visitLogic.Read(new VisitBindingModel { Id = visitId })?[0];
-            if (element != null)
-            {
-                Service.Text = element.ServiceName;
-                DoctorName.Text = element.DoctorName;
-                Date = element.DateVisit;
-            }
         }
     }
 }
