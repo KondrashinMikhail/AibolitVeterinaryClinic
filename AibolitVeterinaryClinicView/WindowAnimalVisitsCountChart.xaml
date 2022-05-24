@@ -9,7 +9,7 @@
         Title="Количество визитов у животных" Loaded="Window_Loaded"  Height="450" Width="800">
     <Grid>
         <DVC:Chart x:Name="AnimalsVisitsCount" Margin="5,5">
-            <DVC:ColumnSeries Title="Кол-во визитов"  IndependentValueBinding="{Binding Item1}" DependentValueBinding="{Binding Item2}"/>
+            <DVC:ColumnSeries Title="Кол-во визитов" IndependentValueBinding="{Binding Item1}" DependentValueBinding="{Binding Item2}"/>
         </DVC:Chart>
     </Grid>
 </Window>

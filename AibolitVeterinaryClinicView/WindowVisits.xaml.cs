@@ -73,5 +73,16 @@ namespace AibolitVeterinaryClinicView
             form.clientId = clientId;
             form.ShowDialog();
         }
+
+        private void Update_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataGrid.SelectedItems.Count == 1)
+            {
+                var form = App.Container.Resolve<WindowVisit>();
+                form.clientId = clientId;
+                form.visitId = ((VisitViewModel)DataGrid.SelectedItems[0]).Id;
+                if (form.ShowDialog() == true) LoadData();
+            }
+        }
     }
 }

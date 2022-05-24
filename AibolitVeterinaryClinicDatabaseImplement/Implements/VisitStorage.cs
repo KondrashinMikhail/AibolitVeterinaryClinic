@@ -146,12 +146,12 @@ namespace AibolitVeterinaryClinicDatabaseImplement.Implements
         {
             using var context = new AibolitVeterinaryClinicDatabase();
             List<int> listMedicines = new();
-            if (visit.VisitMedicines != null) foreach (var item in context.VisitMedicines.Where(rec => rec.VisitId == visit.Id).ToList()) listMedicines.Add(item.MedicineId);
+            if (context.VisitMedicines != null) foreach (var item in context.VisitMedicines.Where(rec => rec.VisitId == visit.Id).ToList()) listMedicines.Add(item.MedicineId);
             List<int> listAnimals = new();
-            if (visit.VisitAnimals != null) foreach (var item in context.VisitAnimals.Where(rec => rec.VisitId == visit.Id).ToList()) listAnimals.Add((int)item.AnimalId);
+            if (context.VisitAnimals != null) foreach (var item in context.VisitAnimals.Where(rec => rec.VisitId == visit.Id).ToList()) listAnimals.Add((int)item.AnimalId);
             List<int> listServices = new();
             List<string> listServiceNames = new();
-            if (visit.VisitServices != null) foreach (var item in context.ServiceVisits.Where(rec => rec.VisitId == visit.Id).ToList()) 
+            if (context.ServiceVisits != null) foreach (var item in context.ServiceVisits.Where(rec => rec.VisitId == visit.Id).ToList()) 
                 {
                     listServices.Add((int)item.ServiceId);
                     listServiceNames.Add(context.Services.FirstOrDefault(rec => rec.Id == item.ServiceId).ServiceName);

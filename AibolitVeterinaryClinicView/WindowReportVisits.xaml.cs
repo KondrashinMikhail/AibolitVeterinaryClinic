@@ -113,7 +113,7 @@ namespace AibolitVeterinaryClinicView
                             DateTo = DatePikerTo.SelectedDate,
                             ClientId = clientId
                         }, clientId);
-                        MessageBox.Show("Отчёт сформирован", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show("Отчёт сформирован", "информация", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     catch (Exception ex)
                     {
@@ -150,7 +150,7 @@ namespace AibolitVeterinaryClinicView
                     Text = "Сведения по визитам с " + DatePikerFrom.SelectedDate.Value.ToShortDateString() + " по " + DatePikerTo.SelectedDate.Value.ToShortDateString(),
                     FileName = "D:/Университет/2 курс/Четвертый семестр/ТП/Курсовая/Отчеты/Отчет mail.pdf"
                 });
-                MessageBox.Show("Отчёт отправлен", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Отчёт отправлен", "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {

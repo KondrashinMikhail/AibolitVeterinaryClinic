@@ -44,6 +44,7 @@ namespace AibolitVeterinaryClinicView
             DataGridAvailable.Columns[2].Header = "Услуга";
             DataGridAvailable.Columns[3].Visibility = Visibility.Hidden;
 
+            ListSelected.Items.Refresh();
             ListSelected.ItemsSource = listNames;
             ListSelected.Items.Refresh();
         }
@@ -62,6 +63,7 @@ namespace AibolitVeterinaryClinicView
         {
             if (DataGridAvailable.SelectedItems.Count == 1)
             {
+
                 listIds.Add(((ServiceViewModel)DataGridAvailable.SelectedItems[0]).Id);
                 listNames.Add(((ServiceViewModel)DataGridAvailable.SelectedItems[0]).ServiceName);
             }
@@ -83,13 +85,24 @@ namespace AibolitVeterinaryClinicView
             foreach (var serviceName in listNames)
                 foreach (var medicicne in _serviceLogic.Read(new ServiceBindingModel { ServiceName = serviceName })?[0].ServiceMedicine)
                     medicines.Add(medicicne.Key);
-            _visitLogic.CreateOrUpdate(new VisitBindingModel
-            {
-                ClientId = clientId,
-                Services = listIds,
-                DateVisit = Convert.ToDateTime(DateVisit.Text),
-                Medicines = medicines
-            });
+            if (visitId != 0)
+                _visitLogic.CreateOrUpdate(new VisitBindingModel
+                {
+                    Id = visitId,
+                    ClientId = clientId,
+                    Services = listIds,
+                    DateVisit = Convert.ToDateTime(DateVisit.Text),
+                    Medicines = medicines
+                });
+            else
+                _visitLogic.CreateOrUpdate(new VisitBindingModel
+                {
+                    ClientId = clientId,
+                    Services = listIds,
+                    DateVisit = Convert.ToDateTime(DateVisit.Text),
+                    Medicines = medicines
+                });
+            MessageBox.Show("Сохранение прошло успешно.", "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
             DialogResult = true;
             Close();
         }
