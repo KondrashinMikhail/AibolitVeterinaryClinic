@@ -49,8 +49,14 @@ namespace AibolitVeterinaryClinicView
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            if (visitId != 0)
+            {
+                var element = _visitLogic.Read(new VisitBindingModel { Id = visitId })?[0];
+                DateVisit.Text = element.DateVisit.ToShortDateString();
+                listNames.AddRange(element.ServiceNames);
+                listIds.AddRange(element.Services);
+            }
             LoadData();
-            if (visitId != 0) DateVisit.Text = _visitLogic.Read(new VisitBindingModel { Id = visitId })?[0].DateVisit.ToShortDateString();
         }
         private void Add_Click(object sender, RoutedEventArgs e)
         {

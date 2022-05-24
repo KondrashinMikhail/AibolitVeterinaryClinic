@@ -33,7 +33,7 @@ namespace AibolitVeterinaryClinicDatabaseImplement.Implements
                 .Include(rec => rec.VisitAnimals)
                 .ThenInclude(rec => rec.Animal)
                 .Include(rec => rec.Client)
-                 .Where(rec => rec.ClientId.Equals(model.ClientId)
+                 .Where(rec => rec.ClientId.Equals(model.ClientId) || rec.Id == model.Id
                    || (!model.DateFrom.HasValue && !model.DateTo.HasValue && rec.DateVisit.Date == model.DateVisit.Date)
                    || (model.DateFrom.HasValue && model.DateTo.HasValue && rec.DateVisit.Date >= model.DateFrom.Value.Date && rec.DateVisit.Date <= model.DateTo.Value.Date))
                 .ToList()
@@ -148,10 +148,10 @@ namespace AibolitVeterinaryClinicDatabaseImplement.Implements
             List<int> listMedicines = new();
             if (visit.VisitMedicines != null) foreach (var item in context.VisitMedicines.Where(rec => rec.VisitId == visit.Id).ToList()) listMedicines.Add(item.MedicineId);
             List<int> listAnimals = new();
-            if (visit.VisitAnimals != null) foreach (var item in visit.VisitAnimals.Where(rec => rec.VisitId == visit.Id).ToList()) listAnimals.Add((int)item.AnimalId);
+            if (visit.VisitAnimals != null) foreach (var item in context.VisitAnimals.Where(rec => rec.VisitId == visit.Id).ToList()) listAnimals.Add((int)item.AnimalId);
             List<int> listServices = new();
             List<string> listServiceNames = new();
-            if (visit.VisitServices != null) foreach (var item in visit.VisitServices.Where(rec => rec.VisitId == visit.Id).ToList()) 
+            if (visit.VisitServices != null) foreach (var item in context.ServiceVisits.Where(rec => rec.VisitId == visit.Id).ToList()) 
                 {
                     listServices.Add((int)item.ServiceId);
                     listServiceNames.Add(context.Services.FirstOrDefault(rec => rec.Id == item.ServiceId).ServiceName);
