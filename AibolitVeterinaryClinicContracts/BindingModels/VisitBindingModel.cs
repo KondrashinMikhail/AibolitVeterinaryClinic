@@ -2,7 +2,7 @@
 {
     public class VisitBindingModel
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public DateTime DateVisit { get; set; }
     }
 }
